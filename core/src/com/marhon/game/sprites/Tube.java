@@ -14,6 +14,7 @@ public class Tube {
     private static final int FLUCTUATION = 130;
     private static final int TUBEGAP = 100;
     private static final int LOWEST_OPENING = 120;
+    public static final int TUBE_WIDTH = 50;
 
     private Texture topTube, bottomTube;
     private Vector2 posTopTube, posBottomTube;
@@ -41,5 +42,10 @@ public class Tube {
 
     public Vector2 getPosBottomTube() {
         return posBottomTube;
+    }
+
+    public void reposition(float x) {
+        posTopTube.set(x, rand.nextInt(FLUCTUATION) + TUBEGAP + LOWEST_OPENING);
+        posBottomTube.set(x, posTopTube.y - TUBEGAP - bottomTube.getHeight());
     }
 }

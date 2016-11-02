@@ -27,7 +27,7 @@ public class Bird {
         velocity.scl(dt);
         position.add(0, velocity.y, 0);
 
-        velocity.scl(1/dt);
+        velocity.scl(1 / dt);
     }
 
     public Vector3 getPosition() {
@@ -36,5 +36,9 @@ public class Bird {
 
     public Texture getTexture() {
         return bird;
+    }
+
+    public void flap() {
+        velocity.y = 250;
     }
 }

@@ -42,6 +42,7 @@ public class PlayState extends State {
         tubes = new Array<Tube>();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
+        font.setUseIntegerPositions(false);
         gameScore = 0;
 
         for (int i = 1; i <= TUBE_COUNT; i++) {

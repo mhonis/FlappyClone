@@ -1,6 +1,7 @@
 package com.marhon.game.sprites;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -12,21 +13,26 @@ public class Bird {
 
     private static final int GRAVITY = -15;
     private static final int MOVEMENT = 100;
+    private static final int BIRD_ANIM_FRAMES = 3;
+    private static final float BIRD_FRAME_TIME = 0.5F;
 
     private Vector3 position;
     private Vector3 velocity;
 
-    private Texture bird;
     private Rectangle bounds;
+    Texture birdTexture;
+    private Animation birdAnimation;
 
     public Bird(int x, int y) {
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
-        bird = new Texture("bird.png");
-        bounds = new Rectangle(x, y, bird.getWidth(), bird.getHeight());
+        birdTexture = new Texture("birdanimation.png");
+        birdAnimation = new Animation(birdTexture, BIRD_ANIM_FRAMES, BIRD_FRAME_TIME);
+        bounds = new Rectangle(x, y, birdTexture.getWidth() / BIRD_ANIM_FRAMES, birdTexture.getHeight());
     }
 
     public void update(float dt) {
+        birdAnimation.update(dt);
         velocity.add(0, GRAVITY, 0);
         velocity.scl(dt);
         position.add(MOVEMENT * dt, velocity.y, 0);
@@ -41,8 +47,8 @@ public class Bird {
         return position;
     }
 
-    public Texture getTexture() {
-        return bird;
+    public TextureRegion getTexture() {
+        return birdAnimation.getFrame();
     }
 
     public void flap() {
@@ -54,6 +60,6 @@ public class Bird {
     }
 
     public void dispose() {
-        bird.dispose();
+        birdTexture.dispose();
     }
 }

@@ -1,7 +1,9 @@
 package com.marhon.game.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -26,6 +28,9 @@ public class PlayState extends State {
     private Texture ground;
     private Vector2 groundPos1, groundPos2;
 
+    BitmapFont font;
+    private int gameScore;
+
     public PlayState(GameStateManager gsm) {
         super(gsm);
         bird = new Bird(50, 300);
@@ -35,6 +40,9 @@ public class PlayState extends State {
         groundPos2 = new Vector2(cam.position.x - (cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
         cam.setToOrtho(false, FlappyDemo.WIDTH / 2, FlappyDemo.HEIGHT / 2);
         tubes = new Array<Tube>();
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        gameScore = 0;
 
         for (int i = 1; i <= TUBE_COUNT; i++) {
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
@@ -58,6 +66,8 @@ public class PlayState extends State {
         for (Tube tube : tubes) {
             if (cam.position.x - (cam.viewportWidth / 2) > tube.getPosTopTube().x + tube.getTopTube().getWidth())
                 tube.reposition(tube.getPosTopTube().x + ((Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
+            if (tube.scores(bird.getBounds()))
+                gameScore++;
             if (tube.collides(bird.getBounds())) {
                 gsm.set(new PlayState(gsm));
                 break;
@@ -73,13 +83,15 @@ public class PlayState extends State {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(bg, cam.position.x - (cam.viewportWidth / 2), 0);
-        sb.draw(bird.getTexture(), bird.getPosition().x, bird.getPosition().y, bird.getTexture().getRegionWidth()/2, bird.getTexture().getRegionHeight()/2, bird.getTexture().getRegionWidth(), bird.getTexture().getRegionHeight(), 1, 1, bird.getRotation());
+        sb.draw(bird.getTexture(), bird.getPosition().x, bird.getPosition().y, bird.getTexture().getRegionWidth() / 2, bird.getTexture().getRegionHeight() / 2, bird.getTexture().getRegionWidth(), bird.getTexture().getRegionHeight(), 1, 1, bird.getRotation());
         for (Tube tube : tubes) {
             sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
             sb.draw(tube.getBottomTube(), tube.getPosBottomTube().x, tube.getPosBottomTube().y);
         }
         sb.draw(ground, groundPos1.x, groundPos1.y);
         sb.draw(ground, groundPos2.x, groundPos2.y);
+//        font.draw(sb, "" + gameScore, cam.position.x + 30, cam.position.y + cam.viewportHeight - 30, 60F, 1, true);
+        font.draw(sb, String.valueOf(gameScore), cam.position.x - cam.viewportWidth / 2 + 5, cam.position.y + cam.viewportHeight / 2 - 5);
         sb.end();
     }
 
@@ -91,6 +103,7 @@ public class PlayState extends State {
         for (Tube tube : tubes) {
             tube.dispose();
         }
+        font.dispose();
     }
 
     private void updateGround() {

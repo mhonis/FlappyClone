@@ -19,8 +19,9 @@ public class Tube {
 
     private Texture topTube, bottomTube;
     private Vector2 posTopTube, posBottomTube;
-    private Rectangle boundsTop, boundsBottom;
+    private Rectangle boundsTop, boundsBottom, boundsScoreGate;
     private Random rand;
+    private boolean tubeCleared;
 
     public Tube(float x) {
         topTube = new Texture("toptube.png");
@@ -30,6 +31,8 @@ public class Tube {
         posBottomTube = new Vector2(x, posTopTube.y - TUBEGAP - bottomTube.getHeight());
         boundsTop = new Rectangle(posTopTube.x, posTopTube.y, topTube.getWidth(), topTube.getHeight());
         boundsBottom = new Rectangle(posBottomTube.x, posBottomTube.y, bottomTube.getWidth(), bottomTube.getHeight());
+        boundsScoreGate = new Rectangle(posBottomTube.x + TUBE_WIDTH, posBottomTube.y + bottomTube.getHeight(), 1, TUBEGAP);
+        tubeCleared = false;
     }
 
     public Texture getTopTube() {
@@ -53,13 +56,23 @@ public class Tube {
         posBottomTube.set(x, posTopTube.y - TUBEGAP - bottomTube.getHeight());
         boundsTop.setPosition(posTopTube);
         boundsBottom.setPosition(posBottomTube);
+        boundsScoreGate.setPosition(posBottomTube.x + TUBE_WIDTH, posBottomTube.y + bottomTube.getHeight());
+        tubeCleared = false;
     }
 
     public boolean collides(Rectangle playerRect) {
         return playerRect.overlaps(boundsTop) || playerRect.overlaps(boundsBottom);
     }
 
-    public void dispose(){
+    public boolean scores(Rectangle playerRect) {
+        if (playerRect.overlaps(boundsScoreGate) && !tubeCleared) {
+            tubeCleared = true;
+            return true;
+        }
+        return false;
+    }
+
+    public void dispose() {
         topTube.dispose();
         bottomTube.dispose();
     }

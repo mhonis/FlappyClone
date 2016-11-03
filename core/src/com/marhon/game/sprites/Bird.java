@@ -1,5 +1,7 @@
 package com.marhon.game.sprites;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,6 +24,7 @@ public class Bird {
     private Rectangle bounds;
     Texture birdTexture;
     private Animation birdAnimation;
+    private Sound flapSound;
 
     public Bird(int x, int y) {
         position = new Vector3(x, y, 0);
@@ -29,6 +32,7 @@ public class Bird {
         birdTexture = new Texture("birdanimation.png");
         birdAnimation = new Animation(birdTexture, BIRD_ANIM_FRAMES, BIRD_FRAME_TIME);
         bounds = new Rectangle(x, y, birdTexture.getWidth() / BIRD_ANIM_FRAMES, birdTexture.getHeight());
+        flapSound = Gdx.audio.newSound(Gdx.files.internal("sfx_wing.ogg"));
     }
 
     public void update(float dt) {
@@ -53,6 +57,7 @@ public class Bird {
 
     public void flap() {
         velocity.y = 250;
+        flapSound.play(0.1F);
     }
 
     public Rectangle getBounds() {
@@ -61,5 +66,14 @@ public class Bird {
 
     public void dispose() {
         birdTexture.dispose();
+        flapSound.dispose();
+    }
+
+    public float getRotation() {
+        if (velocity.y >= 45)
+            return 45F;
+        if (velocity.y < -45)
+            return -45F;
+        return velocity.y;
     }
 }

@@ -1,6 +1,7 @@
 package com.marhon.game.sprites;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
@@ -18,6 +19,7 @@ public class Tube {
 
     private Texture topTube, bottomTube;
     private Vector2 posTopTube, posBottomTube;
+    private Rectangle boundsTop, boundsBottom;
     private Random rand;
 
     public Tube(float x) {
@@ -26,6 +28,8 @@ public class Tube {
         rand = new Random();
         posTopTube = new Vector2(x, rand.nextInt(FLUCTUATION) + TUBEGAP + LOWEST_OPENING);
         posBottomTube = new Vector2(x, posTopTube.y - TUBEGAP - bottomTube.getHeight());
+        boundsTop = new Rectangle(posTopTube.x, posTopTube.y, topTube.getWidth(), topTube.getHeight());
+        boundsBottom = new Rectangle(posBottomTube.x, posBottomTube.y, bottomTube.getWidth(), bottomTube.getHeight());
     }
 
     public Texture getTopTube() {
@@ -47,5 +51,16 @@ public class Tube {
     public void reposition(float x) {
         posTopTube.set(x, rand.nextInt(FLUCTUATION) + TUBEGAP + LOWEST_OPENING);
         posBottomTube.set(x, posTopTube.y - TUBEGAP - bottomTube.getHeight());
+        boundsTop.setPosition(posTopTube);
+        boundsBottom.setPosition(posBottomTube);
+    }
+
+    public boolean collides(Rectangle playerRect) {
+        return playerRect.overlaps(boundsTop) || playerRect.overlaps(boundsBottom);
+    }
+
+    public void dispose(){
+        topTube.dispose();
+        bottomTube.dispose();
     }
 }

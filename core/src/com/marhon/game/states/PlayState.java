@@ -50,6 +50,10 @@ public class PlayState extends State {
         for (Tube tube : tubes) {
             if ((cam.position.x - (cam.viewportWidth / 2)) > tube.getPosTopTube().x + tube.getTopTube().getWidth())
                 tube.reposition(tube.getPosTopTube().x + ((Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
+            if (tube.collides(bird.getBounds())) {
+                gsm.set(new PlayState(gsm));
+                break;
+            }
         }
         cam.update();
     }
@@ -69,10 +73,10 @@ public class PlayState extends State {
 
     @Override
     public void dispose() {
-        bird.getTexture().dispose();
+        bg.dispose();
+        bird.dispose();
         for (Tube tube : tubes) {
-            tube.getTopTube().dispose();
-            tube.getBottomTube().dispose();
+            tube.dispose();
         }
     }
 }

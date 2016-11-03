@@ -69,12 +69,12 @@ public class PlayState extends State {
             if (tube.scores(bird.getBounds()))
                 gameScore++;
             if (tube.collides(bird.getBounds())) {
-                gsm.set(new PlayState(gsm));
+                gsm.set(new GameOverState(gsm, gameScore));
                 break;
             }
         }
         if (bird.getPosition().y <= ground.getHeight() + GROUND_Y_OFFSET)
-            gsm.set(new PlayState(gsm));
+            gsm.set(new GameOverState(gsm, gameScore));
         cam.update();
     }
 
@@ -90,7 +90,6 @@ public class PlayState extends State {
         }
         sb.draw(ground, groundPos1.x, groundPos1.y);
         sb.draw(ground, groundPos2.x, groundPos2.y);
-//        font.draw(sb, "" + gameScore, cam.position.x + 30, cam.position.y + cam.viewportHeight - 30, 60F, 1, true);
         font.draw(sb, String.valueOf(gameScore), cam.position.x - cam.viewportWidth / 2 + 5, cam.position.y + cam.viewportHeight / 2 - 5);
         sb.end();
     }

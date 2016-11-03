@@ -1,6 +1,7 @@
 package com.marhon.game.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,6 +31,7 @@ public class PlayState extends State {
 
     BitmapFont font;
     private int gameScore;
+    private Sound scoreSound;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -44,6 +46,7 @@ public class PlayState extends State {
         font.setColor(Color.WHITE);
         font.setUseIntegerPositions(false);
         gameScore = 0;
+        scoreSound = Gdx.audio.newSound(Gdx.files.internal("scoreup.ogg"));
 
         for (int i = 1; i <= TUBE_COUNT; i++) {
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
@@ -67,8 +70,10 @@ public class PlayState extends State {
         for (Tube tube : tubes) {
             if (cam.position.x - (cam.viewportWidth / 2) > tube.getPosTopTube().x + tube.getTopTube().getWidth())
                 tube.reposition(tube.getPosTopTube().x + ((Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
-            if (tube.scores(bird.getBounds()))
+            if (tube.scores(bird.getBounds())) {
                 gameScore++;
+                scoreSound.play(0.1F);
+            }
             if (tube.collides(bird.getBounds())) {
                 gsm.set(new GameOverState(gsm, gameScore));
                 break;
